@@ -28,7 +28,9 @@ for($i = 0; $i<10000; $i++){
 	}
 }
 
-print_r($info);
+echo NEWLINE.NEWLINE."Highest Number of Steps: ".$highestSteps;
+
+//print_r($info);
 
 function allDigitsEqual($number){
 	$number = (string)$number;

@@ -2,7 +2,10 @@
 
 include("util.php");
 
-for ($i=0; $i < 100; $i++){
+$total = 0;
+$nGames = 100;
+
+for ($i=0; $i < $nGames; $i++){
 	
 	$bYahtzee = false;
 	
@@ -16,11 +19,14 @@ for ($i=0; $i < 100; $i++){
 		$dice5 = rand(1,6);
 		if($dice1 == $dice2 && $dice2 == $dice3 && $dice3 == $dice4 && $dice4 == $dice5){
 			echo "YAHTZEE! ". $counter . NEWLINE;
+			$total += $counter;
 			break;
 		}else{
 			$counter++;
 		}
 	}
 }
+
+echo "Average: ".($total/$nGames) . NEWLINE;
 
 ?>
