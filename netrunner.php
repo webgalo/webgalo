@@ -3,13 +3,16 @@
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-for($i=5001; $i <= 5055; $i++){
-	$curl = curl_init("http://netrunnerdb.com/web/bundles/netrunnerdbcards/images/cards/en-large/".str_pad($i, 5 ,"0",STR_PAD_LEFT).".png");
+for($i=41; $i <= 60; $i++){
+	//$curl = curl_init("http://netrunnerdb.com/web/bundles/netrunnerdbcards/images/cards/en-large/".str_pad($i, 5 ,"0",STR_PAD_LEFT).".png");
 	//$curl = curl_init("http://netrunnerdb.com/web/bundles/netrunnerdbcards/images/cards/en/".str_pad($i, 5 ,"0",STR_PAD_LEFT).".png");
+	$curl = curl_init("http://www.cardgamedb.com/forums/uploads/an/ffg_ADN18_".str_pad($i, 2 ,"0",STR_PAD_LEFT).".png");
+	
+	
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	$resultCurl = curl_exec($curl);
 	
-	$filename = "bc0f047c-01b1-427f-a439-d451eda".str_pad($i, 5 ,"0",STR_PAD_LEFT);
+	$filename = "bc0f047c-01b1-427f-a439-d451eda".str_pad($i+6000, 5 ,"0",STR_PAD_LEFT);
 	
 	file_put_contents("netrunner/png/".$filename.".png", $resultCurl);
 	
