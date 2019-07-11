@@ -48,7 +48,14 @@ foreach ($div as $coin){
     $final = strpos($coin, "mm");
     $length = $final-$initial;
     $diameter = substr($coin, $initial, $length);
+    
+    $initial = strpos($coin, "KM#");
+    $final = strpos($coin, "</div>");
+    $length = $final-$initial;
+    $kmNumber = substr($coin, $initial, $length);
+    
     echo $coin."<BR>";
+    echo $kmNumber."<BR>";
     echo $diameter."<BR>";
 }
 
