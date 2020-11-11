@@ -5,12 +5,7 @@ ini_set('display_errors', '1');
 require_once('twitter-api-php-master/TwitterAPIExchange.php');
 
 /** Set access tokens here - see: https://dev.twitter.com/apps/ **/
-$settings = array(
-		'oauth_access_token' => "115378629-XJx3xDTfvVSsg5ZqaPGoOfLV2FuJCZeDZ3ElEiQ4",
-		'oauth_access_token_secret' => "kJx3qSm4Uz0HjF2odLQRUADwgd4kkVd4Bzn8r8duBazkm",
-		'consumer_key' => "sHyrvmfBGKUJPs4jZh0S1Qmm7",
-		'consumer_secret' => "X6A6xSNkEIZi4b7jn2kHG2ii5hyRcYucDwW34Xu1lU1LviQ6tt"
-);
+// SETTINGS.TXT
 
 $url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
 
@@ -36,10 +31,35 @@ foreach($string as $items)
 }
 */
 
+$file = file_get_contents('numista/11420.jpg');
+$data = base64_encode($file);
+
+$url    = 'https://upload.twitter.com/1.1/media/upload.json';
+$requestMethod = 'POST';
+$postfields = array(
+    'media_data' => $data
+);
+
+$data     = $twitter->buildOauth($url, $requestMethod)->setPostfields($postfields)->performRequest();
+
+/** Store the media id for later **/
+$data = @json_decode($data, true);
+
+$mediaId = $data['media_id'];
+
+echo $mediaId."<br>";
+
+if (!$mediaId)
+{
+    echo "erro<br>";
+   // $twitter->fail('Cannot /update status because /upload failed');
+}
+
 $url = "https://api.twitter.com/1.1/statuses/update.json";
 $requestMethod = "POST";
 $postfields = array(
-    'status' => 'Primeiro tweet de teste da API #twitterAPI'
+    'status' => 'Argentina - 50 Centavos (UNICEF) / 1996 #coins #numista',
+    'media_ids' => $mediaId
 );
 
 echo $twitter->buildOauth($url, $requestMethod)
