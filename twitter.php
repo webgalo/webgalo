@@ -7,7 +7,7 @@ require_once('twitter-api-php-master/TwitterAPIExchange.php');
 /** Set access tokens here - see: https://dev.twitter.com/apps/ **/
 //settings.txt
 
-$twitter = new TwitterAPIExchange($settings);
+$twitter = new TwitterAPIExchange(SETTINGS);
 
 $coin_type_id = '10864';
 

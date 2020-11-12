@@ -37,15 +37,17 @@ function mergeImages($img_src1, $img_src2, $id){
     //place at right side of $img1
     imagecopy($merged_image, $img2, $img1_width, $img2_height_diff, 0, 0, $img2_width, $img2_height);
     
-    $save_path = "numista/".$id.".jpg";
-    imagejpeg($merged_image,$save_path, 100);
+//    $save_path = "numista/".$id.".jpg";
+//    imagejpeg($merged_image,$save_path, 100);
+    /*
+     * 1200px X 675px
+     The ideal image size and aspect ratio are 1200px X 675px and 16:9, respectively. The maximum file size is 5MB for photos and animated GIFs. You can go up to 15MB if you're posting via their website. You can tweet up to four images per post
+     */
     
-    $ratio = $merged_height / $merged_width;
+    $width_proportion = ceil($merged_width/16);
     
-    if($ratio < 0.5625){
-        $adjusted_height = $merged_width*9/16;
-        $adjusted_width = $merged_width;
-    }
+    $adjusted_height = $width_proportion*9;
+    $adjusted_width = $width_proportion*16;
     
     $adjusted_image = imagecreatetruecolor($adjusted_width, $adjusted_height);
     
@@ -55,20 +57,17 @@ function mergeImages($img_src1, $img_src2, $id){
     $white = imagecolorallocate($adjusted_image, 255, 255, 255);
     imagefill($adjusted_image, 0, 0, $white);
     
-    imagecopy($adjusted_image, $merged_image, 0, 0, 0, 0, $merged_width, $adjusted_width);
+    imagecopy($adjusted_image, $merged_image, ($adjusted_width - $merged_width)/2, ($adjusted_height - $merged_height)/2, 0, 0, $merged_width, $merged_height);
     
-    $adjusted_image2 = imagescale($merged_image, 1200, -1);
+    $scaled_image = imagescale($adjusted_image, 1200, 675);
     
-    $save_path = "numista/".$id."_scaled.jpg";
-    imagejpeg($adjusted_image,$save_path, 100);
-    
-    $save_path = "numista/".$id."_scaled2.jpg";
-    imagejpeg($adjusted_image2,$save_path, 100);
+    $save_path = "numista/".$id.".jpg";
+    imagejpeg($scaled_image,$save_path, 100);
     
     //release memory
     imagedestroy($merged_image);
     imagedestroy($adjusted_image);
-    imagedestroy($adjusted_image2);
+    imagedestroy($scaled_image);
     
 }
 
