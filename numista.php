@@ -7,10 +7,51 @@ require_once('settings.php');
 require_once('twitter-api-php-master/TwitterAPIExchange.php');
 include("util.php");
 
-//settings.txt
-
 if(isset($_GET['coinID'])){
-	numista($_GET['coinID']);
+
+	 if(!checkCoinID($_GET['coinID'])){
+		 numista($_GET['coinID']);
+	 }else{
+		 echo "Coin ID ".$_GET['coinID']." já foi twittada.";
+	 }
+
+
+}else{
+
+	$bCheckCoin = false;
+	while(!$bCheckCoin){
+		$f_contents = file("numista/webgalo_coins.csv");
+		$line = $f_contents[array_rand($f_contents)];
+		$data = explode(";", $line);
+
+		$bCheckCoin = checkCoinID($data[5]);
+
+		echo "<pre>";
+		print_r($data);
+		echo "</pre>";
+	}
+
+}
+
+
+
+//check if coin already published
+function checkCoinID($id){
+	$handle = fopen('numista/published_coins.csv', 'r');
+	$valid = false; // init as false
+	while (($buffer = fgets($handle)) !== false) {
+    if (strpos($buffer, $id) !== false) {
+        $valid = TRUE;
+        break; // Once you find the string, you should break out the loop.
+    }
+	}
+	fclose($handle);
+
+	return $valid;
+}
+
+function insertCoinID($coinTypeID){
+	file_put_contents('numista/published_coins.csv', $coinTypeID."\n", FILE_APPEND | LOCK_EX);
 }
 
 function numista($coinID){
@@ -111,61 +152,7 @@ function twit($coinTypeID, $coinText){
     ->setPostfields($postfields)
     ->performRequest();
 
+		insertCoinID($coinTypeID);
+
 }
-
-function updateCoinList(){
-    /*
-     * no notepad++
-     * salvar o arquivo como flat XML
-     *
-     * procurar: (http.*)(" xlink:type="simple">)([^<]*)(</text:a>)
-     * substituir: $1$2$1$4
-     *
-     */
-
-     $myFile = getcwd()."/CPG - Listagens de documentos - modelo 3.TXT";
-
-     $cpg = array();
-
-     $vencimento = "";
-     $valor = 0;
-
-     if(($fh = @fopen($myFile, 'r'))){
-     	while($line = fgetcsv($fh, 0, ';')){
-
-     		if (DateTime::createFromFormat('d/m/Y', substr($line[0], 0, 10)) !== FALSE) {
-     			$vencimento = substr($line[0], 0, 10);
-     			$vencimento = str_replace('/', '-', $vencimento);
-     			$vencimento = date("Y-m-d", strtotime($vencimento));
-
-     			$valor = substr($line[0], 10);
-     			$valor = trim($valor);
-     			//$valor = substr_replace($valor, ",", -3, 1);
-     			$valor = str_replace(".", "", $valor);
-
-     			$cpg[$vencimento][] = $valor;
-     		}
-     	}
-     }
-
-     $vencimentos = array_keys($cpg);
-
-     //$maiorVencimento = max($vencimentos);
-     //$menorVencimento = min($vencimentos);
-
-     $minDate = "2099-12-31";
-     $maxDate = "2000-01-01";
-
-     foreach ($vencimentos as $date){
-
-     	if($date < $minDate){
-     		$minDate = $date;
-     	}
-
-     	if($date > $maxDate){
-     		$maxDate = $date;
-     	}
-     }
-}
-
 ?>
