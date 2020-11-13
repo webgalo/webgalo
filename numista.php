@@ -5,7 +5,7 @@ ini_set('max_execution_time', '120');
 
 require_once('settings.php');
 require_once('twitter-api-php-master/TwitterAPIExchange.php');
-include("util.php");
+require_once("util.php");
 
 if(isset($_GET['coinID'])){
 
@@ -24,23 +24,25 @@ if(isset($_GET['coinID'])){
 		$line = $f_contents[array_rand($f_contents)];
 		$data = explode(";", $line);
 
-		$bCheckCoin = checkCoinID($data[5]);
-
 		echo "<pre>";
 		print_r($data);
 		echo "</pre>";
+
+		if(!checkCoinID($data[5])){
+			numista($data[5]);
+			$bCheckCoin = true;
+		}else{
+			echo "Coin ID ".$data[5]." já foi twittada.";
+		}
 	}
-
 }
-
-
 
 //check if coin already published
 function checkCoinID($id){
 	$handle = fopen('numista/published_coins.csv', 'r');
 	$valid = false; // init as false
 	while (($buffer = fgets($handle)) !== false) {
-    if (strpos($buffer, $id) !== false) {
+    if (strpos($buffer, '"'.$id.'"') !== false) {
         $valid = TRUE;
         break; // Once you find the string, you should break out the loop.
     }
@@ -51,7 +53,7 @@ function checkCoinID($id){
 }
 
 function insertCoinID($coinTypeID){
-	file_put_contents('numista/published_coins.csv', $coinTypeID."\n", FILE_APPEND | LOCK_EX);
+	file_put_contents('numista/published_coins.csv', '"'.$coinTypeID.'"'."\n", FILE_APPEND | LOCK_EX);
 }
 
 function numista($coinID){
@@ -102,6 +104,7 @@ function numista($coinID){
   echo "<h1>".$coinText."</h1>";
   echo "<img src='".$response['obverse']['picture']."'>";
   echo "<img src='".$response['reverse']['picture']."'>";
+	echo "<br>";
 
   mergeImages($response['obverse']['picture'], $response['reverse']['picture'], $coinID);
 
@@ -111,7 +114,6 @@ function numista($coinID){
 
   twit($coinID, $coinText);
 }
-
 
 function twit($coinTypeID, $coinText){
 
@@ -141,10 +143,12 @@ function twit($coinTypeID, $coinText){
         // $twitter->fail('Cannot /update status because /upload failed');
     }
 
+		$coinText = htmlspecialchars_decode($coinText);
+
     $url = "https://api.twitter.com/1.1/statuses/update.json";
     $requestMethod = "POST";
     $postfields = array(
-        'status' => $coinText.' #coins #numista',
+        'status' => $coinText.' #coins #moedas #numista',
         'media_ids' => $mediaId
     );
 
