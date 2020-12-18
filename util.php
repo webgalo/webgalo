@@ -10,12 +10,8 @@ function mergeImages($img_src1, $img_src2, $id){
     list($img1_width, $img1_height) = getimagesize($img_src1);
     list($img2_width, $img2_height) = getimagesize($img_src2);
 
-    echo $img1_width . "//" . $img1_height ."<br>";
-    echo $img2_width . "//" . $img2_height ."<br>";
-
     $merged_width  = $img1_width + $img2_width;
 
-    echo $merged_width."<br>";
     //get highest
     if($img1_height > $img2_height){
         $merged_height = $img1_height;
@@ -26,9 +22,6 @@ function mergeImages($img_src1, $img_src2, $id){
         $img1_height_diff = ($img2_height - $img1_height)/2; //centraliza a imagem menor
         $img2_height_diff = 0;
     }
-
-    echo $merged_height."<br>";
-    echo $img1_height_diff. "//" . $img2_height_diff."<BR>";
 
     $merged_image = imagecreatetruecolor($merged_width, $merged_height);
 
