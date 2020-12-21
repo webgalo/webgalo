@@ -53,6 +53,7 @@ function checkCoinID($id){
 }
 
 function insertCoinID($coinTypeID){
+	// TODO colocar no banco de dados. incluir mais campos como a data e o link para o twitter do post.
 	file_put_contents('numista/published_coins.csv', '"'.$coinTypeID.'"'."\n", FILE_APPEND | LOCK_EX);
 }
 
