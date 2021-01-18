@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
-ini_set('max_execution_time', '120');
+//ini_set('max_execution_time', '120');
 
 require_once('settings.php');
 require_once('twitter-api-php-master/TwitterAPIExchange.php');
